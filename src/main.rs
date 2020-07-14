@@ -1,30 +1,35 @@
-mod complex_types;
-mod library;
+mod pattern_matching;
 
-use complex_types::Person;
-use library::Library;
+use pattern_matching::Shape;
 
 fn main() {
-    let mut library = Library::new();
-    let title = "Introduction to Rust";
-    let book = library::Book::new(title, "Community", 10.0);
-    library.add_book(book);
-    println!(
-        "Book available: {}",
-        if library.is_book_available(title) {
-            "Yes"
-        } else {
-            "No"
-        }
-    );
+    let a = 5;
+    let location = Location {
+        latitude: 10.0,
+        longitude: 20.0,
+    };
+    print(location);
 
-    let person = Person::new_student("Ferris", 15, "FR_1");
-    let (book, cost) = library
-        .borrow(title, person.clone())
-        .expect("Expected book after borrowing");
-    let currency = '₹';
-    println!(
-        "{} is borrowed by {} for {}{}",
-        book.title, person.name, currency, cost
-    )
+    let [first, second] = ['A', 'B'];
+    println!("First: {}, Second:{}", first, second);
+
+    let [first, .., last] = [1, 2, 3, 4];
+    println!("First: {}, last: {}", first, last);
+
+    let shape = Shape::Rectangle(5.0, 8.0);
+    // let Shape::Rectangle(height, width) = shape;
+    println!("Area of reactangle is {}", shape.area())
+}
+
+fn print(location: Location) {
+    let Location {
+        latitude,
+        longitude,
+    } = location;
+    println!("Latitude: {}, Longitude: {}", latitude, longitude);
+}
+
+struct Location {
+    latitude: f32,
+    longitude: f32,
 }
