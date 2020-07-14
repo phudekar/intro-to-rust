@@ -4,6 +4,10 @@ fn main() {
 
     let dog = Dog {};
     dog.make_sound();
+
+    let animals: Vec<Box<dyn Animal>> = vec![Box::new(Lion {}), Box::new(Dog {})];
+
+    animals.iter().for_each(|animal| animal.make_sound());
 }
 
 trait Animal {
