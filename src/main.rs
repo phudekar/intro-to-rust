@@ -1,31 +1,92 @@
 fn main() {
-    let lion = Lion {};
-    lion.make_sound();
+    let netflix = Subscription {
+        name: String::from("Netflix"),
+        payment_method: UPI::new("a@b", "x@y"),
+    };
+    println!(
+        "Payment Processed for {} with reference {:}",
+        netflix.name,
+        netflix.process_payment()
+    );
 
-    let dog = Dog {};
-    dog.make_sound();
-
-    let animals: Vec<Box<dyn Animal>> = vec![Box::new(Lion {}), Box::new(Dog {})];
-
-    animals.iter().for_each(|animal| animal.make_sound());
+    let amazon_prime = Subscription {
+        name: String::from("Amazon Prime"),
+        payment_method: CreditCard::new(12345678890003, 10, 23),
+    };
+    println!(
+        "Payment Processed for {} with reference {:}",
+        amazon_prime.name,
+        amazon_prime.process_payment()
+    );
 }
 
-trait Animal {
-    fn make_sound(&self);
+trait PaymentMethod {
+    fn charge(&self) -> String;
 }
 
-struct Lion;
+struct UPI {
+    from: String,
+    to: String,
+}
 
-impl Animal for Lion {
-    fn make_sound(&self) {
-        println!("Lion roars!")
+impl UPI {
+    pub fn new(from: &str, to: &str) -> UPI {
+        UPI {
+            from: String::from(from),
+            to: String::from(to),
+        }
     }
 }
 
-struct Dog;
+impl PaymentMethod for UPI {
+    fn charge(&self) -> std::string::String {
+        String::from("UPI")
+    }
+}
 
-impl Animal for Dog {
-    fn make_sound(&self) {
-        println!("Dog barks!")
+struct CreditCard {
+    number: u64,
+    expiry: (u8, u8),
+}
+impl CreditCard {
+    pub fn new(number: u64, expiry_month: u8, expiry_year: u8) -> CreditCard {
+        CreditCard {
+            number,
+            expiry: (expiry_month, expiry_year),
+        }
+    }
+}
+
+impl PaymentMethod for CreditCard {
+    fn charge(&self) -> std::string::String {
+        String::from("Credit Card")
+    }
+}
+
+trait Purchase<T>
+where
+    T: PaymentMethod,
+{
+    fn payment_method(&self) -> &T;
+    fn process_payment(&self) -> String {
+        let payment_method: &T = self.payment_method();
+        payment_method.charge()
+    }
+}
+
+struct Subscription<T>
+where
+    T: PaymentMethod,
+{
+    name: String,
+    payment_method: T,
+}
+
+impl<T> Purchase<T> for Subscription<T>
+where
+    T: PaymentMethod,
+{
+    fn payment_method(&self) -> &T {
+        &self.payment_method
     }
 }
