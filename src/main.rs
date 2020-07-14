@@ -1,16 +1,30 @@
 mod complex_types;
+mod library;
 
 use complex_types::Person;
+use library::Library;
 
 fn main() {
-    let name = "Ferris";
-    let age = 7;
+    let mut library = Library::new();
+    let title = "Introduction to Rust";
+    let book = library::Book::new(title, "Community", 10.0);
+    library.add_book(book);
+    println!(
+        "Book available: {}",
+        if library.is_book_available(title) {
+            "Yes"
+        } else {
+            "No"
+        }
+    );
 
-    let ferris = Person::new(name, age);
-
-    if ferris.is_teen() {
-        println!("{} can vote", ferris.name);
-    } else {
-        println!("{} is not eligible to vote", ferris.name);
-    }
+    let person = Person::new_student("Ferris", 15, "FR_1");
+    let (book, cost) = library
+        .borrow(title, person.clone())
+        .expect("Expected book after borrowing");
+    let currency = '₹';
+    println!(
+        "{} is borrowed by {} for {}{}",
+        book.title, person.name, currency, cost
+    )
 }
