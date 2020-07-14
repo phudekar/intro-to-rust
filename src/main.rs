@@ -1,16 +1,25 @@
-mod complex_types;
-
-use complex_types::Person;
-
 fn main() {
-    let name = "Ferris";
     let age = 7;
+    let teenager = is_teenager(age);
+    println!("Age is {}", age);
 
-    let ferris = Person::new(name, age);
+    // let name = String::from("Ferris");
+    // let length = length(name);
+    // println!("Name is {}", name);
 
-    if ferris.is_teen() {
-        println!("{} can vote", ferris.name);
-    } else {
-        println!("{} is not eligible to vote", ferris.name);
-    }
+    // let name = String::from("Ferris");
+    // let length = length_with_borrow(&name);
+    // println!("Name after borrow is {}", name);
+}
+
+fn is_teenager(age: i32) -> bool {
+    age > 12 && age < 18
+}
+
+fn length(str: String) -> usize {
+    str.len()
+}
+
+fn length_with_borrow(str: &String) -> usize {
+    str.len()
 }
