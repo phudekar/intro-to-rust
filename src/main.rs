@@ -1,6 +1,6 @@
-mod pattern_matching;
+mod sahaj;
 
-use pattern_matching::Shape;
+use sahaj::pattern_matching::Shape;
 
 fn main() {
     let a = 5;
@@ -17,8 +17,7 @@ fn main() {
     println!("First: {}, last: {}", first, last);
 
     let shape = Shape::Rectangle(5.0, 8.0);
-    // let Shape::Rectangle(height, width) = shape;
-    println!("Area of reactangle is {}", shape.area())
+    println!("Area of rectangle is {}", shape.area())
 }
 
 fn print(location: Location) {
