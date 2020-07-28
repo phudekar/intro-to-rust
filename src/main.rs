@@ -58,7 +58,8 @@ where
         if t.eq(&self.value) {
             return true;
         }
-        self.left.as_ref().map(|l| l.contains(t)).unwrap_or(false)
-            || self.right.as_ref().map(|r| r.contains(t)).unwrap_or(false)
+        let contains =
+            |v: Option<&Box<BinaryTree<T>>>| v.as_ref().map(|a| a.contains(t)).unwrap_or(false);
+        contains(self.left.as_ref()) || contains(self.right.as_ref())
     }
 }
