@@ -8,3 +8,4 @@ edition = "2018"
 
 [dependencies]
 geoutils = "0.4.0"
+threadpool = "1.8.1"
