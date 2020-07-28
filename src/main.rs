@@ -1,65 +1,89 @@
+use std::cell::Cell;
+use std::rc::Rc;
+
 fn main() {
-    let mut tree = BinaryTree::new(6);
-    tree.push(4);
-    tree.push(8);
-    tree.push(2);
-    tree.push(1);
-    tree.push(10);
-    tree.push(7);
-    tree.push(9);
-    tree.push(3);
-    tree.push(5);
+    let alex = Rc::new(Person::new("Alex", 111111111));
+    let mut college = College::new();
+    college.add_student(Rc::clone(&alex));
 
-    println!("{:#?}", tree);
+    let mut office = Office::new();
+    office.add_employee(Rc::clone(&alex));
 
-    println!("{}", tree.contains(&4));
-    println!("{}", tree.contains(&11));
+    college.contact();
+    office.contact();
+
+    alex.change_contact_number(2222222);
+
+    college.contact();
+    office.contact();
 }
 
-#[derive(Debug)]
-struct BinaryTree<T>
-where
-    T: PartialOrd,
-{
-    value: T,
-    left: Option<Box<BinaryTree<T>>>,
-    right: Option<Box<BinaryTree<T>>>,
+#[derive(Clone)]
+struct Person {
+    name: String,
+    contact_number: Cell<u32>,
 }
 
-impl<T> BinaryTree<T>
-where
-    T: PartialOrd,
-{
-    pub fn new(t: T) -> Self {
-        BinaryTree {
-            value: t,
-            left: None,
-            right: None,
+impl Person {
+    pub fn new(name: &str, contact_number: u32) -> Self {
+        Person {
+            name: String::from(name),
+            contact_number: Cell::new(contact_number),
         }
     }
-
-    pub fn push(&mut self, t: T) {
-        if t < self.value {
-            if let Some(left) = self.left.as_mut() {
-                left.push(t);
-            } else {
-                self.left = Some(Box::new(BinaryTree::new(t)));
-            }
-        } else {
-            if let Some(right) = self.right.as_mut() {
-                right.push(t);
-            } else {
-                self.right = Some(Box::new(BinaryTree::new(t)));
-            }
-        }
+    pub fn name(&self) -> String {
+        self.name.clone()
     }
 
-    pub fn contains(&self, t: &T) -> bool {
-        if t.eq(&self.value) {
-            return true;
+    pub fn contact_number(&self) -> u32 {
+        self.contact_number.get()
+    }
+
+    pub fn change_contact_number(&self, new_contact_number: u32) {
+        self.contact_number.set(new_contact_number);
+    }
+}
+
+struct College {
+    students: Vec<Rc<Person>>,
+}
+
+impl College {
+    pub fn new() -> Self {
+        College { students: vec![] }
+    }
+    pub fn add_student(&mut self, student: Rc<Person>) {
+        self.students.push(student)
+    }
+    pub fn contact(&self) {
+        for person in self.students.iter() {
+            println!(
+                "College contacting {} on {}",
+                person.name(),
+                person.contact_number()
+            );
         }
-        let contains =
-            |v: Option<&Box<BinaryTree<T>>>| v.as_ref().map(|a| a.contains(t)).unwrap_or(false);
-        contains(self.left.as_ref()) || contains(self.right.as_ref())
+    }
+}
+
+struct Office {
+    employees: Vec<Rc<Person>>,
+}
+
+impl Office {
+    pub fn new() -> Self {
+        Office { employees: vec![] }
+    }
+    pub fn add_employee(&mut self, employee: Rc<Person>) {
+        self.employees.push(employee)
+    }
+    pub fn contact(&self) {
+        for person in self.employees.iter() {
+            println!(
+                "Office contacting {} on {}",
+                person.name(),
+                person.contact_number()
+            );
+        }
     }
 }
