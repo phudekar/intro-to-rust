@@ -1,25 +1,64 @@
-use std::sync::mpsc;
-use std::thread;
-
 fn main() {
-    let mut threads = vec![];
-    let mut counter = 0;
-    let (sender, receiver) = mpsc::channel();
-    for i in 1..=10 {
-        let tx = sender.clone();
-        threads.push(thread::spawn(move || {
-            thread::sleep(std::time::Duration::from_secs(1));
-            tx.send((i, 1)).unwrap();
-        }));
+    let mut tree = BinaryTree::new(6);
+    tree.push(4);
+    tree.push(8);
+    tree.push(2);
+    tree.push(1);
+    tree.push(10);
+    tree.push(7);
+    tree.push(9);
+    tree.push(3);
+    tree.push(5);
+
+    println!("{:#?}", tree);
+
+    println!("{}", tree.contains(&4));
+    println!("{}", tree.contains(&11));
+}
+
+#[derive(Debug)]
+struct BinaryTree<T>
+where
+    T: PartialOrd,
+{
+    value: T,
+    left: Option<Box<BinaryTree<T>>>,
+    right: Option<Box<BinaryTree<T>>>,
+}
+
+impl<T> BinaryTree<T>
+where
+    T: PartialOrd,
+{
+    pub fn new(t: T) -> Self {
+        BinaryTree {
+            value: t,
+            left: None,
+            right: None,
+        }
     }
 
-    for _ in 1..=threads.len() {
-        let (thread, increment) = receiver.recv().unwrap();
-        counter += increment;
-        println!("{} -> {}", thread, counter);
+    pub fn push(&mut self, t: T) {
+        if t < self.value {
+            if let Some(left) = self.left.as_mut() {
+                left.push(t);
+            } else {
+                self.left = Some(Box::new(BinaryTree::new(t)));
+            }
+        } else {
+            if let Some(right) = self.right.as_mut() {
+                right.push(t);
+            } else {
+                self.right = Some(Box::new(BinaryTree::new(t)));
+            }
+        }
     }
 
-    for t in threads {
-        t.join().unwrap();
+    pub fn contains(&self, t: &T) -> bool {
+        if t.eq(&self.value) {
+            return true;
+        }
+        self.left.as_ref().map(|l| l.contains(t)).unwrap_or(false)
+            || self.right.as_ref().map(|r| r.contains(t)).unwrap_or(false)
     }
 }
