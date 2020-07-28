@@ -1,13 +1,12 @@
 use std::cell::Cell;
-use std::rc::Rc;
 
 fn main() {
-    let alex = Rc::new(Person::new("Alex", 111111111));
+    let alex = Person::new("Alex", 111111111);
     let mut college = College::new();
-    college.add_student(Rc::clone(&alex));
+    college.add_student(alex.clone());
 
     let mut office = Office::new();
-    office.add_employee(Rc::clone(&alex));
+    office.add_employee(alex.clone());
 
     college.contact();
     office.contact();
@@ -45,14 +44,14 @@ impl Person {
 }
 
 struct College {
-    students: Vec<Rc<Person>>,
+    students: Vec<Person>,
 }
 
 impl College {
     pub fn new() -> Self {
         College { students: vec![] }
     }
-    pub fn add_student(&mut self, student: Rc<Person>) {
+    pub fn add_student(&mut self, student: Person) {
         self.students.push(student)
     }
     pub fn contact(&self) {
@@ -67,14 +66,14 @@ impl College {
 }
 
 struct Office {
-    employees: Vec<Rc<Person>>,
+    employees: Vec<Person>,
 }
 
 impl Office {
     pub fn new() -> Self {
         Office { employees: vec![] }
     }
-    pub fn add_employee(&mut self, employee: Rc<Person>) {
+    pub fn add_employee(&mut self, employee: Person) {
         self.employees.push(employee)
     }
     pub fn contact(&self) {
