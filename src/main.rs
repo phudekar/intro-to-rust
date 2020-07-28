@@ -1,18 +1,20 @@
-mod transport;
-use transport::{Journey, Metro, MetroLine};
+mod threads;
+use std::thread;
 
 fn main() {
-    let from = "Swargate";
-    let to = "Viman Nagar";
-    let journey = Journey::new(from, to);
-    let metro = Metro {
-        line: MetroLine::Red,
-    };
-    println!(
-        "Fare from {} to {} by {:?} Line is {}",
-        from,
-        to,
-        MetroLine::Red,
-        journey.fare(&metro)
-    )
+    let mut threads = vec![];
+    let mut count = 0;
+    for i in 1..=10 {
+        threads.push(thread::spawn(move || {
+            count += 1;
+            thread::sleep(std::time::Duration::from_secs(1));
+            println!("{} -> {}", i, count)
+        }));
+    }
+
+    for t in threads {
+        t.join().unwrap();
+    }
+
+    // threads::run();
 }
