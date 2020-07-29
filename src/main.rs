@@ -11,14 +11,14 @@ mod transport;
 mod unique_words;
 
 fn main() {
-    // complex_types::run();
-    // unique_words::run();
-    // threads::run();
-    // pattern_matching::run();
-    // message_passing::run();
-    // transport::run();
-    // rc::run();
-    // generics::run();
-    // btree::run();
-    // ownership::run();
+    complex_types::run();
+    pattern_matching::run();
+    ownership::run();
+    transport::run();
+    generics::run();
+    btree::run();
+    rc::run();
+    threads::run();
+    message_passing::run();
+    unique_words::run();
 }
