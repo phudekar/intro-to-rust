@@ -2,6 +2,7 @@ mod complex_types;
 mod library;
 mod message_passing;
 mod pattern_matching;
+mod rc;
 mod threads;
 mod transport;
 mod unique_words;
@@ -13,4 +14,5 @@ fn main() {
     // pattern_matching::run();
     // message_passing::run();
     // transport::run();
+    rc::run();
 }
