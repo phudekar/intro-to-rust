@@ -1,4 +1,5 @@
 mod complex_types;
+mod generics;
 mod library;
 mod message_passing;
 mod pattern_matching;
@@ -14,5 +15,6 @@ fn main() {
     // pattern_matching::run();
     // message_passing::run();
     // transport::run();
-    rc::run();
+    // rc::run();
+    // generics::run();
 }
