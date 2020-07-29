@@ -13,22 +13,36 @@ impl Library {
         self.books.push(book);
     }
 
+    fn find_book(&self, title: &str) -> Option<&Book> {
+        self.books
+            .iter()
+            .find(|book| book.title == title && book.borrowed_by.is_none())
+    }
+
     pub fn is_book_available(&self, title: &str) -> bool {
-        self.books.iter().filter(|book| book.title == title).count() > 0
+        self.find_book(title).is_some()
     }
 
     pub fn borrow(&mut self, title: &str, person: Person) -> Result<(Book, f32), &str> {
-        if let Some(book) = self.books.iter_mut().find(|book| book.title == title) {
-            book.lend_to(&person);
-            let cost = book.price - book.price * person.get_discount();
-            Ok((book.clone(), cost))
+        if let Some(book) = self
+            .books
+            .iter_mut()
+            .find(|book| book.title == title && book.borrowed_by.is_none())
+        {
+            if person.is_teen() {
+                book.lend_to(&person);
+                let cost = book.price - book.price * person.get_discount();
+                Ok((book.clone(), cost))
+            } else {
+                Err("This library does not allow adults to borrow book")
+            }
         } else {
             Err("Book is not available!")
         }
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Book {
     pub title: String,
     author: String,
