@@ -3,6 +3,7 @@ mod complex_types;
 mod generics;
 mod library;
 mod message_passing;
+mod ownership;
 mod pattern_matching;
 mod rc;
 mod threads;
@@ -19,4 +20,5 @@ fn main() {
     // rc::run();
     // generics::run();
     // btree::run();
+    // ownership::run();
 }
